@@ -1,1 +1,111 @@
-1.
+1.第一行的package main定义了包名，必须在源文件中非注释的第一行指明这个文件属于哪个包
+  package main表示一个可独立执行的程序，每个Go应用程序都包含一个名为main的包
+2.常量表达式中，函数必须是内置函数，否则编译不过
+3.iota，特殊常量，第一个iota等于0，每新增一行常量声明将使iota计数一次，定义枚举很有用
+  每次const出现时，都会让iota初始化为0
+  _下划线表示跳过值
+  自定义增长方式
+  	const (
+  		a = iota * 10   //0
+  		b               //10
+  		c               //20
+  		d = iota *2     //6
+  		e               //8
+  	)
+  中间插队，中间插队时，iota会被覆盖不再继续自增，用另一个iota又会继续自增
+  	const (
+  		a = iota        //0
+  		b               //1
+  		c = 5           //5
+  		d               //5
+  		e = iota        //4
+  		f               //5
+  		g = 3           //3
+  		h               //3
+  	)
+4.条件语句switch不用加break，如果需要执行后面的一个case（包括default）则加fallthrough
+5.for循环的使用
+for [condition |  ( init; condition; increment ) | Range]
+{
+   for [condition |  ( init; condition; increment ) | Range]
+   {
+      statement(s);
+   }
+   statement(s);
+}
+
+6.函数的定义
+func function_name( [parameter list] ) [return_types] {
+   函数体
+}
+默认值传递，加*传指针则为引用传递
+
+7.函数闭包
+能够读取其他函数内部变量的函数
+函数的定义和函数的表达式位于另一个函数的函数体内，
+这些内部函数可以访问它们所在的外部函数中声明的所有局部变量、参数和声明的其他内部函数
+
+8.定义方法
+func (variable_name variable_data_type) function_name() [return_type]{
+   /* 函数体*/
+}
+function_name为variable_data_type类型对象的方法
+
+9.数组定义
+var variable_name [SIZE] variable_type
+
+10.空指针值为nil
+
+11.结构体可以通过key: value的方式为指定变量赋值
+
+12.切片，类似动态数组通过不指定数组长度来定义
+len()获得长度cap()获得容量
+空切片默认为nil长度、容量为0
+append()追加内容copy()拷贝内容
+
+13.range关键字用于for循环中迭代数组、切片、通道、集合中的元素。在数组和切片中返回索引和索引对应的值，在集合中返回key-value对
+
+14.声明map(集合)还需要使用make来初始化
+delete函数用于删除，参数为map和对应的key
+
+15.接口
+把所用的具有共性的方法定义在一起，任何其他类型只要实现了这些方法就是实现了这个接口
+/* 定义接口 */
+type interface_name interface {
+   method_name1 [return_type]
+   method_name2 [return_type]
+   method_name3 [return_type]
+   ...
+   method_namen [return_type]
+}
+
+/* 定义结构体 */
+type struct_name struct {
+   /* variables */
+}
+
+/* 实现接口方法 */
+func (struct_name_variable struct_name) method_name1() [return_type] {
+   /* 方法实现 */
+}
+...
+func (struct_name_variable struct_name) method_namen() [return_type] {
+   /* 方法实现*/
+
+16.Go语言通过内置的错误接口提供了非常简单的错误处理机制
+type error interface {
+    Error() string
+}
+error.New()可以返回一条错误信息
+
+17.go关键字可以开启一个新的线程，所有goroutine共享一个地址空间
+
+18.通道是用来传递数据的一个数据结构，可用于两个goroutine之间传递一个指定类型的值来同步运行和通讯。
+操作符<-用于指定通道的方向，未指定则为双向通道
+通道声明和创建
+ch := make(chan int)
+默认不带缓冲区，通过make的第二个参数指定缓冲区大小
+range关键字接受数据
+v, ok := <-ch
+如果接收不到数据则为false
+通过close函数可以关闭通道，如果不关闭，则range关键字会阻塞
